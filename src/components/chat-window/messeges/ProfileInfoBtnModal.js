@@ -19,7 +19,7 @@ const ProfileInfoBtnModal = ({ profile, ...btnProps }) => {
       </Button>
       <Modal show={isOpen} onHide={close} onClick={open}>
         <Modal.Header>
-          <Modal.Title>{shortName} profile</Modal.Title>
+          <Modal.Title>{`${shortName}'s`} profile</Modal.Title>
         </Modal.Header>
         <Modal.Body className="text-center">
           <ProfileAvatar
