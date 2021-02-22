@@ -1,12 +1,13 @@
-/* eslint-disable arrow-body-style */
-import React, { useCallback, useState } from 'react';
-import { useParams } from 'react-router';
-import { Alert, Icon, Input, InputGroup } from 'rsuite';
+import React, { useState, useCallback } from 'react';
+import { InputGroup, Input, Icon, Alert } from 'rsuite';
 import firebase from 'firebase/app';
+import { useParams } from 'react-router';
 import { useProfile } from '../../../context/profile.context';
 import { database } from '../../../misc/firebase';
+import AttachmentBtnModal from './AttachmentBtnModal';
+import AudioMsgBtn from './AudioMsgBtn';
 
-function assenbleMessage(profile, chatId) {
+function assembleMessage(profile, chatId) {
   return {
     roomId: chatId,
     author: {
@@ -22,22 +23,21 @@ function assenbleMessage(profile, chatId) {
 
 const Bottom = () => {
   const [input, setInput] = useState('');
-
   const [isLoading, setIsLoading] = useState(false);
 
   const { chatId } = useParams();
-
   const { profile } = useProfile();
 
-  const onInputChange = useCallback(val => {
-    setInput(val);
+  const onInputChange = useCallback(value => {
+    setInput(value);
   }, []);
 
   const onSendClick = async () => {
-    if (input.trim === '') {
+    if (input.trim() === '') {
       return;
     }
-    const msgData = assenbleMessage(profile, chatId);
+
+    const msgData = assembleMessage(profile, chatId);
     msgData.text = input;
 
     const updates = {};
@@ -53,11 +53,12 @@ const Bottom = () => {
     setIsLoading(true);
     try {
       await database.ref().update(updates);
+
       setInput('');
       setIsLoading(false);
     } catch (err) {
-      Alert.error(err.message, 4000);
       setIsLoading(false);
+      Alert.error(err.message);
     }
   };
 
@@ -68,15 +69,51 @@ const Bottom = () => {
     }
   };
 
+  const afterUpload = useCallback(
+    async files => {
+      setIsLoading(true);
+
+      const updates = {};
+
+      files.forEach(file => {
+        const msgData = assembleMessage(profile, chatId);
+        msgData.file = file;
+
+        const messageId = database.ref('messages').push().key;
+
+        updates[`/messages/${messageId}`] = msgData;
+      });
+
+      const lastMsgId = Object.keys(updates).pop();
+
+      updates[`/rooms/${chatId}/lastMessage`] = {
+        ...updates[lastMsgId],
+        msgId: lastMsgId,
+      };
+
+      try {
+        await database.ref().update(updates);
+        setIsLoading(false);
+      } catch (err) {
+        setIsLoading(false);
+        Alert.error(err.message);
+      }
+    },
+    [chatId, profile]
+  );
+
   return (
     <div>
       <InputGroup>
+        <AttachmentBtnModal afterUpload={afterUpload} />
+        <AudioMsgBtn afterUpload={afterUpload} />
         <Input
-          placeholder="write a new message here..."
+          placeholder="Write a new message here..."
           value={input}
           onChange={onInputChange}
           onKeyDown={onKeyDown}
         />
+
         <InputGroup.Button
           color="blue"
           appearance="primary"
