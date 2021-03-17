@@ -18,6 +18,7 @@ const ProfileContext = createContext();
 export const ProfileProvider = ({ children }) => {
   const [profile, setProfile] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [onSignInWithEmail, setSignInWithEmail] = useState(false);
 
   useEffect(() => {
     let userRef;
@@ -41,6 +42,7 @@ export const ProfileProvider = ({ children }) => {
 
           setProfile(data);
           setIsLoading(false);
+          setSignInWithEmail(false);
         });
 
         database.ref('.info/connected').on('value', snapshot => {
@@ -69,6 +71,7 @@ export const ProfileProvider = ({ children }) => {
 
         setProfile(null);
         setIsLoading(false);
+        setSignInWithEmail(false);
       }
     });
 
@@ -88,7 +91,9 @@ export const ProfileProvider = ({ children }) => {
   }, []);
 
   return (
-    <ProfileContext.Provider value={{ isLoading, profile }}>
+    <ProfileContext.Provider
+      value={{ isLoading, profile, onSignInWithEmail, setSignInWithEmail }}
+    >
       {children}
     </ProfileContext.Provider>
   );

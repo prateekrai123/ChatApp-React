@@ -5,7 +5,7 @@ import { Container, Loader } from 'rsuite';
 import { useProfile } from '../context/profile.context';
 
 const PrivateRoute = ({ children, ...routeProps }) => {
-  const { profile, isLoading } = useProfile();
+  const { profile, isLoading, onSignInWithEmail } = useProfile();
   if (isLoading && !profile) {
     return (
       <Container>
@@ -14,8 +14,11 @@ const PrivateRoute = ({ children, ...routeProps }) => {
     );
   }
 
-  if (!profile && !isLoading) {
+  if (!profile && !isLoading && !onSignInWithEmail) {
     return <Redirect to="/signin" />;
+  }
+  if (!profile && !isLoading && onSignInWithEmail) {
+    return <Redirect to="/signinwithemail" />;
   }
 
   return <Route {...routeProps}>{children}</Route>;

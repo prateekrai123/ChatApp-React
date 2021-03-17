@@ -1,8 +1,9 @@
 /* eslint-disable arrow-body-style */
 import React from 'react';
 import firebase from 'firebase/app';
+import { Link } from 'react-router-dom';
 import { Alert, Button, Col, Container, Grid, Icon, Panel, Row } from 'rsuite';
-import { auth, database } from '../misc/firebase';
+import { auth, database } from '../../misc/firebase';
 
 const SignIn = () => {
   const signInWithProvider = async provider => {
@@ -41,6 +42,11 @@ const SignIn = () => {
                 <p>Progressive chat platform for neophytes</p>
               </div>
               <div className="mt-3">
+                <Link to="/signinwithemail">
+                  <Button block color="yellow">
+                    Log In with E-mail and password
+                  </Button>
+                </Link>
                 <Button block color="blue" onClick={onFacebookSignIn}>
                   <Icon icon="facebook" /> Continue with Facebook
                 </Button>
