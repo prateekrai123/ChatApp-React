@@ -45,7 +45,7 @@ const Bottom = () => {
     const messageId = database.ref('messages').push().key;
 
     updates[`/messages/${messageId}`] = msgData;
-    updates[`/profile/${profile.uid}/rooms/${chatId}/lastMessage`] = {
+    updates[`/rooms/${chatId}/lastMessage`] = {
       ...msgData,
       msgId: messageId,
     };
