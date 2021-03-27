@@ -11,12 +11,14 @@ const ForgotPassword = () => {
   }, []);
 
   const onForgotPasswordClick = () => {
-    try {
-      Promise.resolve(auth.sendPasswordResetEmail(email));
-      Alert.success('Password reset email sent');
-    } catch (error) {
-      Alert.error(error.message);
-    }
+    Promise.resolve(auth.sendPasswordResetEmail(email))
+      .then(() => {
+        Alert.success('Password reset email sent to your email', 4000);
+        window.location.reload();
+      })
+      .catch(err => {
+        Alert.error(err.message, 4000);
+      });
   };
 
   return (
@@ -27,6 +29,7 @@ const ForgotPassword = () => {
         onChange={onEmailInputChange}
         value={email}
       />
+      <br />
       <Button block color="cyan" onClick={onForgotPasswordClick}>
         Forgot Password
       </Button>
@@ -35,3 +38,12 @@ const ForgotPassword = () => {
 };
 
 export default ForgotPassword;
+
+// try {
+//   Promise.resolve(auth.sendPasswordResetEmail(email)).then(() => {
+//     Alert.success('Password reset link sent to your email', 4000);
+//     window.location.reload();
+//   });
+// } catch (error) {
+//   Alert.error(error.message, 4000);
+// }

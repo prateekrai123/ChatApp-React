@@ -2,6 +2,7 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { useParams } from 'react-router';
 import { Alert, Button } from 'rsuite';
+import { useProfile } from '../../../context/profile.context';
 import { database, auth, storage } from '../../../misc/firebase';
 import { transformToArrWithId, groupBy } from '../../../misc/helper';
 import MessageItem from './MessageItem';
@@ -21,6 +22,7 @@ const Messages = () => {
   const [messages, setMessages] = useState(null);
   const [limit, setLimit] = useState(PAGE_SIZE);
   const selfRef = useRef();
+  const profile = useProfile();
 
   const isChatEmpty = messages && messages.length === 0;
   const canShowMessages = messages && messages.length > 0;
@@ -77,7 +79,9 @@ const Messages = () => {
 
   const handleAdmin = useCallback(
     async uid => {
-      const adminsRef = database.ref(`/rooms/${chatId}/admins`);
+      const adminsRef = database.ref(
+        `/profile/${profile.uid}/rooms/${chatId}/admins`
+      );
       let alertMsg;
       await adminsRef.transaction(admins => {
         if (admins) {

@@ -1,8 +1,7 @@
 /* eslint-disable arrow-body-style */
 import React from 'react';
 import firebase from 'firebase/app';
-import { Link } from 'react-router-dom';
-import { Alert, Button, Col, Container, Grid, Icon, Panel, Row } from 'rsuite';
+import { Alert, Button, Container, Icon } from 'rsuite';
 import { auth, database } from '../../misc/firebase';
 
 const SignIn = () => {
@@ -33,31 +32,17 @@ const SignIn = () => {
 
   return (
     <Container>
-      <Grid className="mt-page">
-        <Row>
-          <Col xs={24} md={12} mdOffset={6}>
-            <Panel>
-              <div className="text-center">
-                <h2>Welcome to Chat</h2>
-                <p>Progressive chat platform for neophytes</p>
-              </div>
-              <div className="mt-3">
-                <Link to="/signinwithemail">
-                  <Button block color="yellow">
-                    Log In with E-mail and password
-                  </Button>
-                </Link>
-                <Button block color="blue" onClick={onFacebookSignIn}>
-                  <Icon icon="facebook" /> Continue with Facebook
-                </Button>
-                <Button block color="green" onClick={onGoogleSignIn}>
-                  <Icon icon="google" /> Continue with Google
-                </Button>
-              </div>
-            </Panel>
-          </Col>
-        </Row>
-      </Grid>
+      <div className="mt-3">
+        <center>
+          <Button color="blue" onClick={onFacebookSignIn}>
+            <Icon icon="facebook" />
+          </Button>
+          <span> </span>
+          <Button color="green" onClick={onGoogleSignIn}>
+            <Icon icon="google" />
+          </Button>
+        </center>
+      </div>
     </Container>
   );
 };

@@ -23,8 +23,11 @@ const LogIn = () => {
 
   const onLoginClick = () => {
     try {
-      Promise.resolve(auth.signInWithEmailAndPassword(email, password));
-      Alert.success('Signed In', 4000);
+      Promise.resolve(auth.signInWithEmailAndPassword(email, password)).catch(
+        err => {
+          Alert.error(err.message, 4000);
+        }
+      );
     } catch (err) {
       Alert.error(err.message, 4000);
     }

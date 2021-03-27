@@ -5,7 +5,7 @@ import firebase from 'firebase/app';
 import { Alert, Button, Col, Container, Grid, Input, Panel, Row } from 'rsuite';
 import { auth, database } from '../../misc/firebase';
 import LogIn from './LogIn';
-// import { auth, database } from '../misc/firebase';
+import SignIn from './SignIn';
 
 const SignInWithEmail = () => {
   const [login, setLogin] = useState(false);
@@ -30,20 +30,30 @@ const SignInWithEmail = () => {
   };
 
   const register = () => {
-    try {
-      auth.createUserWithEmailAndPassword(email, password).then(data => {
-        try {
-          database.ref(`/profiles/${data.user.uid}`).set({
-            name: name,
-            createdAt: firebase.database.ServerValue.TIMESTAMP,
-          });
-        } catch (error) {
-          Alert.error(error.message, 4000);
-        }
-      });
-      Alert.success('User Created', 4000);
-    } catch (error) {
-      Alert.error(error.message, 4000);
+    if (password.length < 8) {
+      Alert.error('Password must be more than 8 characters long', 4000);
+    } else {
+      try {
+        Promise.resolve(
+          auth
+            .createUserWithEmailAndPassword(email, password)
+            .then(data => {
+              try {
+                database.ref(`/profiles/${data.user.uid}`).set({
+                  name: name,
+                  createdAt: firebase.database.ServerValue.TIMESTAMP,
+                });
+              } catch (error) {
+                Alert.error(error.message, 4000);
+              }
+            })
+            .catch(err => {
+              Alert.error(err.message, 4000);
+            })
+        );
+      } catch (error) {
+        Alert.error(error.message, 4000);
+      }
     }
   };
 
@@ -85,6 +95,7 @@ const SignInWithEmail = () => {
                     <Button block color="cyan" onClick={onLoginClick}>
                       Log In
                     </Button>
+                    <SignIn />
                   </div>
                 </div>
               )}
