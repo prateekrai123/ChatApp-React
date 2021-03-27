@@ -28,7 +28,7 @@ export async function getUserUpdates(userId, keyToUpdate, value, db) {
     .once('value');
 
   const getRooms = db
-    .ref('/rooms')
+    .ref(`/rooms`)
     .orderByChild('lastMessage/author/uid')
     .equalTo(userId)
     .once('value');
