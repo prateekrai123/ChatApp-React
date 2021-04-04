@@ -14,6 +14,7 @@ import {
 import firebase from 'firebase/app';
 import { useModalState } from '../misc/custom-hooks';
 import { auth, database } from '../misc/firebase';
+import { useProfile } from '../context/profile.context';
 
 const { StringType } = Schema.Types;
 
@@ -34,9 +35,13 @@ const CreateRoomBtnModal = () => {
   const [isLoading, setIsLoading] = useState(false);
   const formRef = useRef();
 
+  const { profile } = useProfile();
+
   const onFormChange = useCallback(value => {
     setFormValue(value);
   }, []);
+
+  const x = Math.random(10000000);
 
   const onSubmit = async () => {
     if (!formRef.current.check()) {
@@ -46,13 +51,15 @@ const CreateRoomBtnModal = () => {
     const newRoomData = {
       ...formValue,
       createdAt: firebase.database.ServerValue.TIMESTAMP,
+      uid: `4000+${x}`,
       admins: {
         [auth.currentUser.uid]: true,
       },
     };
 
     try {
-      await database.ref('rooms').push(newRoomData);
+      await database.ref(`profiles/${profile.uid}/rooms`).push(newRoomData);
+      await database.ref(`rooms`).push(newRoomData);
       Alert.success(`${formValue.name} has been created`, 4000);
       setIsLoading(false);
       setFormValue(INITIAL_FORM);

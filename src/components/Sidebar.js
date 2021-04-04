@@ -4,6 +4,7 @@ import { Divider } from 'rsuite';
 import CreateRoomBtnModal from './CreateRoomBtnModal';
 import DashboardToggle from './dashboard/DashboardToggle';
 import ChatRoomList from './rooms/ChatRoomList';
+import JoinChatRoomBtn from './JoinChatRoomBtn';
 
 const Sidebar = () => {
   const topSidebarRef = useRef();
@@ -20,7 +21,8 @@ const Sidebar = () => {
       <div ref={topSidebarRef}>
         <DashboardToggle />
         <CreateRoomBtnModal />
-        <Divider>Join conversation</Divider>
+        <JoinChatRoomBtn />
+        <Divider>Chat Rooms</Divider>
       </div>
       <ChatRoomList aboveElHeight={height} />
     </div>
